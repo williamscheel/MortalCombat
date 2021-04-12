@@ -87,12 +87,26 @@ function playerWins(name){
 }
 
 
+function createReloadButton(){
+    const $divReloadButton = createElement('div', 'reloadWrap');
+    const $reloadButton = createElement('button', 'button');
+
+    $reloadButton.innerText = 'Restart';
+    $reloadButton.addEventListener('click', function(){
+        window.location.reload();
+    });
+
+    $divReloadButton.appendChild($reloadButton);
+    return $divReloadButton;
+}
+
 $buttonRandom.addEventListener('click', function () {
     subzero.changeHP();
     sonya.changeHP();
 
     if(subzero.hp === 0 || sonya.hp === 0) {
         $buttonRandom.disabled = true;
+        $divArenas.appendChild(createReloadButton());
     }
 
     if(subzero.hp === 0 && subzero.hp < sonya.hp ){
