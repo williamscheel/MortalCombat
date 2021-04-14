@@ -5,6 +5,9 @@ const subzero = {
     player: 1,
     name: 'Subzero',
     hp: 100,
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['Ice scepter'],
     attack: function() {
@@ -15,6 +18,9 @@ const sonya = {
     player: 2,
     name: 'Sonya',
     hp: 100,
+    changeHP: changeHP,
+    elHP: elHP,
+    renderHP: renderHP,
     img: 'http://reactmarathon-api.herokuapp.com/assets/sonya.gif',
     weapon: ['Wind blade'],
     attack: function() {
@@ -56,26 +62,60 @@ function createPlayer(player) {
 
 }
 
-function changeHP(player){
-    const $playerLife = document.querySelector('.player'+ player.player +' .life');
-    player.hp -= Math.random()*20;
-    $playerLife.style.width = ((player.hp <= 0 ) ? 0 : player.hp) + '%';
-    if(player.hp <= 0){
-        $divArenas.appendChild(playerLose((player.name == 'Sonya')? 'Subzero' : 'Sonya'));
-        $buttonRandom.disabled = true;
-    }
+function changeHP(){
+    this.hp -= Math.random()*20;
+    if(this.hp <= 0) this.hp = 0
+    this.renderHP();
 }
 
-function playerLose(name){
+function elHP(){
+    return document.querySelector('.player'+ this.player +' .life');
+}
+
+function renderHP(){
+    this.elHP().style.width = this.hp + '%';
+}
+
+function playerWins(name){
     const $loseTitle = createElement('div', 'loseTitle');
-    $loseTitle.innerText = name + ' Wins!'
+    if(name) {
+        $loseTitle.innerText = name + ' Wins!'
+    } else {
+        $loseTitle.innerText = 'Draw!'
+    }
     return $loseTitle;
 }
 
 
+function createReloadButton(){
+    const $divReloadButton = createElement('div', 'reloadWrap');
+    const $reloadButton = createElement('button', 'button');
+
+    $reloadButton.innerText = 'Restart';
+    $reloadButton.addEventListener('click', function(){
+        window.location.reload();
+    });
+
+    $divReloadButton.appendChild($reloadButton);
+    return $divReloadButton;
+}
+
 $buttonRandom.addEventListener('click', function () {
-    changeHP(subzero);
-    changeHP(sonya);
+    subzero.changeHP();
+    sonya.changeHP();
+
+    if(subzero.hp === 0 || sonya.hp === 0) {
+        $buttonRandom.disabled = true;
+        $divArenas.appendChild(createReloadButton());
+    }
+
+    if(subzero.hp === 0 && subzero.hp < sonya.hp ){
+        $divArenas.appendChild(playerWins( 'Sonya'));
+    } else if(sonya.hp === 0 && sonya.hp < subzero.hp){
+        $divArenas.appendChild(playerWins( 'Subzero'));
+    } else if(sonya.hp === 0 && subzero.hp === 0){
+        $divArenas.appendChild(playerWins());
+    }
 
 });
 
