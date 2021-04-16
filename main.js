@@ -1,31 +1,35 @@
 const $divArenas = document.querySelector('.arenas');
-const $buttonRandom = document.querySelector('.button');
+const $buttonFight = document.querySelector('.button');
+const $formFight = document.querySelector('.control');
+
+const HIT = {
+    'head'   : 50,
+    'body'  : 25,
+    'foot'  : 20,
+};
+const ATTACK = ['head', 'body', 'foot'];
 
 const subzero = {
     player: 1,
     name: 'Subzero',
     hp: 100,
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP,
+    changeHP,
+    elHP,
+    renderHP,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
     weapon: ['Ice scepter'],
-    attack: function() {
-        console.log(this.name + ' fight');
-    }
+    attack
 };
 const sonya = {
     player: 2,
     name: 'Sonya',
     hp: 100,
-    changeHP: changeHP,
-    elHP: elHP,
-    renderHP: renderHP,
+    changeHP,
+    elHP,
+    renderHP,
     img: 'http://reactmarathon-api.herokuapp.com/assets/sonya.gif',
     weapon: ['Wind blade'],
-    attack: function() {
-        console.log(this.name + ' fight');
-    }
+    attack
 }
 
 function createElement(tag, className){
@@ -62,10 +66,9 @@ function createPlayer(player) {
 
 }
 
-function changeHP(){
-    this.hp -= Math.random()*20;
+function changeHP(value){
+    this.hp -= value;
     if(this.hp <= 0) this.hp = 0
-    this.renderHP();
 }
 
 function elHP(){
@@ -83,7 +86,11 @@ function playerWins(name){
     } else {
         $loseTitle.innerText = 'Draw!'
     }
-    return $loseTitle;
+  
+    $buttonFight.disabled = true;
+    $divArenas.appendChild(createReloadButton());
+
+  return $loseTitle;
 }
 
 
@@ -100,13 +107,53 @@ function createReloadButton(){
     return $divReloadButton;
 }
 
-$buttonRandom.addEventListener('click', function () {
-    subzero.changeHP();
-    sonya.changeHP();
+function getRandom(num){
+    return Math.ceil(Math.random()*num);
+}
 
-    if(subzero.hp === 0 || sonya.hp === 0) {
-        $buttonRandom.disabled = true;
-        $divArenas.appendChild(createReloadButton());
+$divArenas.appendChild(createPlayer(subzero));
+$divArenas.appendChild(createPlayer(sonya));
+
+function enemyAttack(){
+    const hit = ATTACK[getRandom(3) - 1];
+    const defence = ATTACK[getRandom(3) - 1];
+
+    return {
+        value   : getRandom(HIT[hit]),
+        hit     : hit,
+        defence : defence
+    };
+}
+
+function attack(value){
+    this.changeHP(value);
+    this.renderHP();
+}
+
+$formFight.addEventListener('submit', function(e){
+    e.preventDefault();
+    const enemy = enemyAttack();
+    const attack = {};
+
+    for(let item of $formFight){
+        if(item.checked === true && item.name === 'hit'){
+            attack.value = getRandom(HIT[item.value]);
+            attack.hit = item.value;
+        }
+        if(item.checked === true && item.name === 'defence'){
+            attack.defence = item.value;
+        }
+        item.checked = false;
+    }
+    // console.log('## enemy: ', enemy);
+    // console.log('## atack: ', attack);
+
+
+    if(attack.hit != enemy.defence){
+        sonya.attack(attack.value);
+    }
+    if(enemy.hit != attack.defence){
+        subzero.attack(enemy.value);
     }
 
     if(subzero.hp === 0 && subzero.hp < sonya.hp ){
@@ -118,6 +165,3 @@ $buttonRandom.addEventListener('click', function () {
     }
 
 });
-
-$divArenas.appendChild(createPlayer(subzero));
-$divArenas.appendChild(createPlayer(sonya));
