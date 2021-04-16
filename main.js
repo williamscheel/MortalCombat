@@ -86,11 +86,11 @@ function playerWins(name){
     } else {
         $loseTitle.innerText = 'Draw!'
     }
-
+  
     $buttonFight.disabled = true;
     $divArenas.appendChild(createReloadButton());
 
-    return $loseTitle;
+  return $loseTitle;
 }
 
 
