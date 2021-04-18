@@ -118,7 +118,7 @@ function getRandom(num){
 
 $divArenas.appendChild(createPlayer(subzero));
 $divArenas.appendChild(createPlayer(sonya));
-addEventChat(textLogsChat('start', subzero, sonya));
+textLogsChat('start', subzero, sonya);
 
 
 
@@ -163,11 +163,10 @@ function waitKick(ms) {
 async function charactersPunch(player1, player2){
     if(player1.kickParams.hit !== player2.kickParams.defence){
         player2.attack(player1.kickParams.value);
-        const textLog = textLogsChat('hit', player1, player2);
-        addEventChat(textLog);
+        textLogsChat('hit', player1, player2);
     } else if(player1.kickParams.hit === player2.kickParams.defence){
-        const textLog = textLogsChat('defence', player1, player2);
-        addEventChat(textLog);
+        textLogsChat('defence', player1, player2);
+
     }
 
     $buttonFight.disabled = true; // отключаем кнопку на время выполнения функции waitKick
@@ -178,27 +177,22 @@ async function charactersPunch(player1, player2){
 
     if(player2.kickParams.hit !== player1.kickParams.defence){
         subzero.attack(player2.kickParams.value);
-        const textLog = textLogsChat('hit', player2, player1);
-        addEventChat(textLog);
-    } else if(player2.kickParams.hit === player1.kickParams.defence){
-        const textLog = textLogsChat('defence', player2, player1);
-        addEventChat(textLog);
+        textLogsChat('hit', player2, player1);
+    } else {
+        textLogsChat('defence', player2, player1);
     }
 }
 
 function fightResult(){
     if(subzero.hp === 0 && subzero.hp < sonya.hp ){
         $divArenas.appendChild(playerWins( 'Sonya'));
-        const textLog = textLogsChat('end', sonya, subzero);
-        addEventChat(textLog);
+        textLogsChat('end', sonya, subzero);
     } else if(sonya.hp === 0 && sonya.hp < subzero.hp){
         $divArenas.appendChild(playerWins( 'Subzero'));
-        const textLog = textLogsChat('end', subzero, sonya);
-        addEventChat(textLog);
+        textLogsChat('end', subzero, sonya);
     } else if(sonya.hp === 0 && subzero.hp === 0){
         $divArenas.appendChild(playerWins());
-        const textLog = textLogsChat('draw');
-        addEventChat(textLog);
+        textLogsChat('draw');
     }
 }
 
@@ -266,7 +260,7 @@ function textLogsChat(type, playerInitiator, playerOpponent){
         }
     }
 
-    return text;
+    addEventChat(text);
 }
 
 
