@@ -1,9 +1,10 @@
 const $divArenas = document.querySelector('.arenas');
 const $buttonFight = document.querySelector('.button');
 const $formFight = document.querySelector('.control');
+const $chat = document.querySelector('.chat')
 
 const HIT = {
-    'head'   : 50,
+    'head'   : 100,
     'body'  : 25,
     'foot'  : 20,
 };
@@ -17,8 +18,10 @@ const subzero = {
     elHP,
     renderHP,
     img: 'http://reactmarathon-api.herokuapp.com/assets/subzero.gif',
+    //img: 'assets/subZeroKick.gif',
     weapon: ['Ice scepter'],
-    attack
+    attack,
+    kickParams: {}
 };
 const sonya = {
     player: 2,
@@ -29,8 +32,10 @@ const sonya = {
     renderHP,
     img: 'http://reactmarathon-api.herokuapp.com/assets/sonya.gif',
     weapon: ['Wind blade'],
-    attack
+    attack,
+    kickParams: {}
 }
+
 
 function createElement(tag, className){
     const $tag = document.createElement(tag);
@@ -86,11 +91,11 @@ function playerWins(name){
     } else {
         $loseTitle.innerText = 'Draw!'
     }
-  
+
     $buttonFight.disabled = true;
     $divArenas.appendChild(createReloadButton());
 
-  return $loseTitle;
+    return $loseTitle;
 }
 
 
@@ -113,6 +118,9 @@ function getRandom(num){
 
 $divArenas.appendChild(createPlayer(subzero));
 $divArenas.appendChild(createPlayer(sonya));
+textLogsChat('start', subzero, sonya);
+
+
 
 function enemyAttack(){
     const hit = ATTACK[getRandom(3) - 1];
@@ -125,16 +133,8 @@ function enemyAttack(){
     };
 }
 
-function attack(value){
-    this.changeHP(value);
-    this.renderHP();
-}
-
-$formFight.addEventListener('submit', function(e){
-    e.preventDefault();
-    const enemy = enemyAttack();
+function playerAttack(){
     const attack = {};
-
     for(let item of $formFight){
         if(item.checked === true && item.name === 'hit'){
             attack.value = getRandom(HIT[item.value]);
@@ -145,23 +145,126 @@ $formFight.addEventListener('submit', function(e){
         }
         item.checked = false;
     }
-    // console.log('## enemy: ', enemy);
-    // console.log('## atack: ', attack);
+    return attack;
+}
 
+function attack(value){
+    this.changeHP(value);
+    this.renderHP();
+}
 
-    if(attack.hit != enemy.defence){
-        sonya.attack(attack.value);
+function waitKick(ms) {
+    return new Promise(resolve => {
+
+        setTimeout(resolve, ms);
+    });
+}
+
+async function charactersPunch(player1, player2){
+    if(player1.kickParams.hit !== player2.kickParams.defence){
+        player2.attack(player1.kickParams.value);
+        textLogsChat('hit', player1, player2);
+    } else if(player1.kickParams.hit === player2.kickParams.defence){
+        textLogsChat('defence', player1, player2);
+
     }
-    if(enemy.hit != attack.defence){
-        subzero.attack(enemy.value);
-    }
 
+    $buttonFight.disabled = true; // отключаем кнопку на время выполнения функции waitKick
+
+    await waitKick(4000);
+
+    $buttonFight.disabled = false; // включаем кнопку удара после выполнения waitKick
+
+    if(player2.kickParams.hit !== player1.kickParams.defence){
+        subzero.attack(player2.kickParams.value);
+        textLogsChat('hit', player2, player1);
+    } else {
+        textLogsChat('defence', player2, player1);
+    }
+}
+
+function fightResult(){
     if(subzero.hp === 0 && subzero.hp < sonya.hp ){
         $divArenas.appendChild(playerWins( 'Sonya'));
+        textLogsChat('end', sonya, subzero);
     } else if(sonya.hp === 0 && sonya.hp < subzero.hp){
         $divArenas.appendChild(playerWins( 'Subzero'));
+        textLogsChat('end', subzero, sonya);
     } else if(sonya.hp === 0 && subzero.hp === 0){
         $divArenas.appendChild(playerWins());
+        textLogsChat('draw');
     }
+}
+
+$formFight.addEventListener('submit', function(e){
+    e.preventDefault();
+    sonya.kickParams = enemyAttack();
+    subzero.kickParams = playerAttack();
+
+    charactersPunch(subzero, sonya);
+    fightResult();
 
 });
+
+
+function getCurrentTime(){
+    const date = new Date();
+    // const getYear = date.getFullYear();
+    // const getMonth = ('0' + (date.getMonth()+1)).slice(-2);
+    // const getDay = ('0' + date.getDate()).slice(-2);
+    const hours = ('0' + date.getHours()).slice(-2);
+    const minutes = ('0' + date.getMinutes()).slice(-2);
+
+    return `${hours}:${minutes}`;
+}
+
+
+function textLogsChat(type, playerInitiator, playerOpponent){
+    const randomNumber = getRandom(logs[type].length - 1);
+    const time = getCurrentTime();
+    let text = '';
+
+    switch(type){
+        case 'start':
+            text = logs.start.replace('[time]', time)
+                                .replace('[player1]', playerInitiator.name)
+                                .replace('[player2]', playerOpponent.name);
+            break;
+        case 'end':
+            text = logs.end[randomNumber].replace('[playerWins]', playerInitiator.name)
+                                            .replace('[playerLose]', playerOpponent.name);
+            break;
+        case 'hit':
+            text = logs.hit[randomNumber].replace('[playerKick]', playerInitiator.name)
+                                            .replace('[playerDefence]', playerOpponent.name);
+
+            break;
+        case 'defence':
+            text =  logs.defence[randomNumber].replace('[playerKick]', playerInitiator.name)
+                                                .replace('[playerDefence]', playerOpponent.name);
+            break;
+        case 'draw':
+            text = logs.draw;
+            break;
+        default:
+            text = 'ERROR! Переменная type не определена!';
+            break
+    }
+
+    if(type !== 'start') {
+        text = `[${ time }] ${text} `;
+        if(type === 'hit') {
+            text += `[-${playerInitiator.kickParams.value}HP], [${playerOpponent.hp}/100]`;
+        } else {
+            text += `[Урон не был нанесен] [${playerOpponent.hp}/100]`;
+        }
+    }
+
+    addEventChat(text);
+}
+
+
+function addEventChat(text){
+    const el = `<p>${text}</p>`;
+    $chat.insertAdjacentHTML('afterbegin', el);
+}
