@@ -5,7 +5,7 @@ import textLogsChat from "./logChat.js";
 const playerWins = (name) => {
     const $loseTitle = createElement('div', 'loseTitle');
     if(name) {
-        $loseTitle.innerText = name + ' Wins!'
+        $loseTitle.innerText =  `${name} Wins!`
     } else {
         $loseTitle.innerText = 'Draw!'
     }

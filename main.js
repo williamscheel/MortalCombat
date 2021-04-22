@@ -15,23 +15,22 @@ export const createElement = (tag, className) => {
     return $tag;
 }
 
-export const createPlayer = (player) => {
-    const {player: playerNum, name, hp} = player;
+export const createPlayer = ({player: playerNum, name, hp, img}) => {
 
-    const $player = createElement('div', 'player'+playerNum);
+    const $player = createElement('div', `player${playerNum}`);
     const $progressBar = createElement('div','progressbar');
     const $divPlayerLife = createElement('div','life');
     const $divPlayerName = createElement('div', 'name');
     const $playerCharacter = createElement('div','character');
     const $playerIMG = createElement('img');
 
-    $divPlayerLife.style.width = hp+'%';
+    $divPlayerLife.style.width = `${hp}%`;
 
     $divPlayerName.innerText = name;
     $progressBar.appendChild($divPlayerLife);
 
     $progressBar.appendChild($divPlayerName);
-    $playerIMG.src = player.img;
+    $playerIMG.src = img;
 
     $playerCharacter.appendChild($playerIMG);
 

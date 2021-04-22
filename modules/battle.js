@@ -49,11 +49,11 @@ export function changeHP(value){
 }
 
 export function elHP(){
-    return document.querySelector('.player'+ this.player +' .life');
+    return document.querySelector(`.player${this.player}  .life`);
 }
 
 export function renderHP(){
-    this.elHP().style.width = this.hp + '%';
+    this.elHP().style.width =  `${this.hp}%`;
 }
 
 /** this */
