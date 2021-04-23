@@ -1,6 +1,9 @@
-import {createElement, $divArenas, $buttonFight} from "../main.js";
-import {subzero, sonya} from "./players.js";
+import {player1, player2} from "./players.js";
 import textLogsChat from "./logChat.js";
+import {createElement} from "./utils.js";
+
+import {$buttonFight, $divArenas} from "../data/constants.js";
+
 
 const playerWins = (name) => {
     const $loseTitle = createElement('div', 'loseTitle');
@@ -31,13 +34,13 @@ const createReloadButton = () => {
 }
 
 const fightResult = () =>{
-    if(subzero.hp === 0 && subzero.hp < sonya.hp ){
-        $divArenas.appendChild(playerWins( 'Sonya'));
-        textLogsChat('end', sonya, subzero);
-    } else if(sonya.hp === 0 && sonya.hp < subzero.hp){
-        $divArenas.appendChild(playerWins( 'Subzero'));
-        textLogsChat('end', subzero, sonya);
-    } else if(sonya.hp === 0 && subzero.hp === 0){
+    if(player1.hp === 0 && player1.hp < player2.hp ){
+        $divArenas.appendChild(playerWins( player2.name));
+        textLogsChat('end', player2, player1);
+    } else if(player2.hp === 0 && player2.hp < player1.hp){
+        $divArenas.appendChild(playerWins( player1.name));
+        textLogsChat('end', player1, player2);
+    } else if(player2.hp === 0 && player1.hp === 0){
         $divArenas.appendChild(playerWins());
         textLogsChat('draw');
     }

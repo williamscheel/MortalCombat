@@ -1,4 +1,4 @@
-import {logs} from "../logs.js";
+import {logs} from "../data/logs.js";
 import {getRandom, getCurrentTime} from "./utils.js";
 
 

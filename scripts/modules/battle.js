@@ -1,6 +1,5 @@
-import {$buttonFight, $formFight} from "../main.js";
+import {$buttonFight, $formFight} from "../data/constants.js";
 import textLogsChat from "./logChat.js";
-import {subzero} from "./players.js";
 import {getRandom} from "./utils.js";
 
 const HIT = {
@@ -81,7 +80,7 @@ export async function charactersPunch(player1, player2){
     $buttonFight.disabled = false; // включаем кнопку удара после выполнения waitKick
 
     if(hitPlayer2 !== defencePlayer1){
-        subzero.attack(player2.kickParams.value);
+        player1.attack(player2.kickParams.value);
         textLogsChat('hit', player2, player1);
     } else {
         textLogsChat('defence', player2, player1);
