@@ -10,6 +10,24 @@
     font-display: swap;
 }
 
+body {
+    font-family: Arial, sans-serif; /* Рубленый шрифт */
+}
+.miss {
+    color: orangered; /* Красный цвет символов */
+    font-family: serif; /* Шрифт с засечками */
+    position: relative; /* Относительное позиционирование */
+}
+.damage {
+    color: lightgreen; /* Красный цвет символов */
+    font-family: serif; /* Шрифт с засечками */
+    position: relative; /* Относительное позиционирование */
+}
+.health {
+    color: darkorange; /* Красный цвет символов */
+    font-family: serif; /* Шрифт с засечками */
+    position: relative; /* Относительное позиционирование */
+}
 
 *,
 *:before,

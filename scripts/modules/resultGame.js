@@ -8,8 +8,12 @@ import {$buttonFight, $divArenas} from "../data/constants.js";
 const playerWins = (name) => {
     const $loseTitle = createElement('div', 'loseTitle');
     if(name) {
+        var audio = new Audio('assets/audio/wins.mp3');
+        audio.autoplay = true;
         $loseTitle.innerText =  `${name} Wins!`
     } else {
+        var audio = new Audio('assets/audio/bloody.mp3');
+        audio.autoplay = true;
         $loseTitle.innerText = 'Draw!'
     }
 
@@ -26,9 +30,8 @@ const createReloadButton = () => {
 
     $reloadButton.innerText = 'Restart';
     $reloadButton.addEventListener('click', function(){
-        window.location.reload();
+        let a = window.location = 'index.html';
     });
-
     $divReloadButton.appendChild($reloadButton);
     return $divReloadButton;
 }

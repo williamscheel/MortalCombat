@@ -1,14 +1,13 @@
 import {createElement} from "../modules/utils.js";
 
-export class createPlayer1 {
+export class createPlayer {
 
-    constructor(props){
-        this.player = 1;
+    constructor(props, playerNum){
+        this.player = playerNum;
         this.name = props.name;
         this.hp = props.hp;
         this.img = props.img;
         this.weapon = props.weapon;
-        this.kickParams = props.kickParams;
         this.kickParams = {};
     }
 
@@ -56,10 +55,4 @@ export class createPlayer1 {
 
     };
 
-}
-export class createPlayer2 extends createPlayer1{
-    constructor(props){
-        super(props);
-        this.player = 2;
-    }
 }
