@@ -1,12 +1,19 @@
-import {createElement, $divArenas, $buttonFight} from "../main.js";
-import {subzero, sonya} from "./players.js";
+import {player1, player2} from "./players.js";
 import textLogsChat from "./logChat.js";
+import {createElement} from "./utils.js";
+
+import {$buttonFight, $divArenas} from "../data/constants.js";
+
 
 const playerWins = (name) => {
     const $loseTitle = createElement('div', 'loseTitle');
     if(name) {
+        var audio = new Audio('assets/audio/wins.mp3');
+        audio.autoplay = true;
         $loseTitle.innerText =  `${name} Wins!`
     } else {
+        var audio = new Audio('assets/audio/bloody.mp3');
+        audio.autoplay = true;
         $loseTitle.innerText = 'Draw!'
     }
 
@@ -23,21 +30,20 @@ const createReloadButton = () => {
 
     $reloadButton.innerText = 'Restart';
     $reloadButton.addEventListener('click', function(){
-        window.location.reload();
+        let a = window.location = 'index.html';
     });
-
     $divReloadButton.appendChild($reloadButton);
     return $divReloadButton;
 }
 
 const fightResult = () =>{
-    if(subzero.hp === 0 && subzero.hp < sonya.hp ){
-        $divArenas.appendChild(playerWins( 'Sonya'));
-        textLogsChat('end', sonya, subzero);
-    } else if(sonya.hp === 0 && sonya.hp < subzero.hp){
-        $divArenas.appendChild(playerWins( 'Subzero'));
-        textLogsChat('end', subzero, sonya);
-    } else if(sonya.hp === 0 && subzero.hp === 0){
+    if(player1.hp === 0 && player1.hp < player2.hp ){
+        $divArenas.appendChild(playerWins( player2.name));
+        textLogsChat('end', player2, player1);
+    } else if(player2.hp === 0 && player2.hp < player1.hp){
+        $divArenas.appendChild(playerWins( player1.name));
+        textLogsChat('end', player1, player2);
+    } else if(player2.hp === 0 && player1.hp === 0){
         $divArenas.appendChild(playerWins());
         textLogsChat('draw');
     }

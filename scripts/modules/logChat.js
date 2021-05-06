@@ -1,4 +1,4 @@
-import {logs} from "../logs.js";
+import {logs} from "../data/logs.js";
 import {getRandom, getCurrentTime} from "./utils.js";
 
 
@@ -44,10 +44,10 @@ const textLogsChat = (type, {name: nameInitiator, kickParams:{value: kickValueIn
 
     switch(type){
         case 'hit':
-            text = `[${time}] ${text} [${kickValueInitiator}HP], [${hpOpponent}/100]`;
+            text = `[${time}] ${text} <span class="damage">[${kickValueInitiator}HP]</span>, <span class="health">[${hpOpponent}/100]</span>`;
             break;
         case 'defence':
-            text = `[${time}] ${text} [ПРОМАХ], [${hpOpponent}/100]`;
+            text = `[${time}] ${text} <span class="miss">[ПРОМАХ]</span>,  <span class="health">[${hpOpponent}/100]</span>`;
             break;
     }
 
